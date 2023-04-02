@@ -212,7 +212,7 @@ int main(int argc, char *argv[])
 
     // écriture des informations de chaque match dans le fichier texte
     for (int i = 0; i < num_match; i++) {
-        fprintf(fp, "Match %d : Equipe %d vs Equipe %d - Score %d:%d - Tour %d\n", i + 1, matchs[i]->team1, matchs[i]->team2, matchs[i]->score1, matchs[i]->score2, matchs[i]->tour);
+        fprintf(fp, "Match %d : Equipe %s vs Equipe %s - Score %d:%d - Tour %d\n", i + 1, team_names[matchs[i]->team1], team_names[matchs[i]->team2], matchs[i]->score1, matchs[i]->score2, matchs[i]->tour);
     }
 
     fclose(fp); // fermeture du fichier

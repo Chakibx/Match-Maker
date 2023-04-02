@@ -56,12 +56,12 @@ void *play_match(void *ma)
         int tab;
         while(nTab > 0){
             tab = rand() % 100;
-            if(tab > 20){ //80% de marquer
+            if(tab > 20){ //80% de chance de marquer
                 match->score1++;
                 printf("    %.20s (%d) - (%d) %-20s\n", team_names[match->team1], match->score1, match->score2, team_names[match->team2]);
             }
             tab = rand() % 100;
-            if(tab < 40){//60% de marquer
+            if(tab < 40){//60% de chance de marquer
                 match->score2++;
                 printf("    %.20s (%d) - (%d) %-20s\n", team_names[match->team1], match->score1, match->score2, team_names[match->team2]);
             }
@@ -92,7 +92,6 @@ void printMatch(Match match){
 
 int main(int argc, char *argv[])
 {
-
     pthread_mutex_init(&mutex,NULL);
 
     //Creation d'une liste randomise avec les equipes
@@ -164,6 +163,10 @@ int main(int argc, char *argv[])
     {
         pthread_join(threads[i], NULL);
     }
+
+    //Enregistrement des matchs dans un fichier texte
+
+
 
     pthread_mutex_destroy(&mutex);
 

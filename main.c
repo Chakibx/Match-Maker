@@ -8,7 +8,7 @@
 
 int duration = DURATION;
 int num_teams;
-char **team_names;//[MAX_TEAM_NAME_LEN];
+char *team_names[50];
 int teams_remaining[MAX_TEAMS];
 int manuelle;
 

@@ -10,8 +10,6 @@ char *team_names[MAX_TEAMS];
 int teams_remaining[MAX_TEAMS];
 int manuelle;
 
-
-
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 typedef struct Match{
@@ -36,17 +34,17 @@ void *play_match(void *ma)
     {
         action = rand() % 100; // simulate random action
         if (action < 98)
-        { // 98% chance of no score
+        { // 98% de chance de ne pas marquer
             duration++;
         }
         else if (action == 99 )
-        { // 1% chance of goal for team 1
+        { // 1% de chance de marquer pour l'equipe 1
             match->score1++;
             duration++;
             printf("(%d')    %.20s %d - %d %-20s\n",duration, team_names[match->team1], match->score1, match->score2, team_names[match->team2]);
         }
-        else
-        { // 1% chance of goal for team 2
+        else //action == 100
+        { // 1% de chance de marquer pour l'equipe 2
             match->score2++;
             duration++;
             printf("(%d')    %.20s %d - %d %-20s\n",duration, team_names[match->team1], match->score1, match->score2, team_names[match->team2]);
@@ -111,15 +109,17 @@ int main(int argc, char *argv[])
     team_names[7] = "Arsenal";
 
     num_teams = 8;
-    for (int i = 0; i < num_teams; i++)
-    {
-        teams_remaining[i] = 1;
-    }
 
     if (num_teams % 2 != 0 || num_teams > MAX_TEAMS)
     {
         printf("Number of teams must be a power of 2 and less than %d\n", MAX_TEAMS);
         exit(EXIT_FAILURE);
+    }
+
+    //Initialisation du tableau a 1 qui corresspond au numero du tour
+    for (int i = 0; i < num_teams; i++)
+    {
+        teams_remaining[i] = 1;
     }
 
     int num_matchs_total = num_teams-1;
@@ -164,12 +164,6 @@ int main(int argc, char *argv[])
     {
         pthread_join(threads[i], NULL);
     }
-
-    for (int i = 0; i < num_matchs_total; ++i) {
-        printf("%d ",teams_remaining[i]);
-    }
-
-
 
     pthread_mutex_destroy(&mutex);
 

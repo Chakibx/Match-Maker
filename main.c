@@ -2,16 +2,60 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <unistd.h>
-#define MAX_TEAMS 32
+#include <string.h>
+#include <time.h>
+#define MAX_TEAMS 100 // nombre max des equipes
+#define MAX_TEAM_NAME_LEN 50 //taille de nom d'equipes
 #define DURATION 90 // default match duration is 90 minutes, equivalent to 5400sec
-#include "shuffle.c"
 
+void read_team_names(char* filename, int* num_teams, int* match_duration, char *** team_names) {
+    FILE *file;
+    *team_names = (char**) malloc(MAX_TEAMS * sizeof(char*));
+    char line[MAX_TEAM_NAME_LEN];
 
-int duration = DURATION;
+    for (int i = 0; i < MAX_TEAMS; i++) {
+        (*team_names)[i] = (char*) malloc(MAX_TEAM_NAME_LEN * sizeof(char));
+    }
+
+    file = fopen(filename, "r");
+    if (file == NULL) {
+        printf("Erreur lors de l'ouverture du fichier.");
+        exit(1);
+    }
+
+    // Lecture de la durée du match sur la première ligne
+    fgets(line, sizeof(line), file);
+    *match_duration = atoi(line);
+
+    // Lecture des noms d'équipes sur les lignes suivantes
+    while (fgets(line, sizeof(line), file)) {
+        // Supprime le caractère de fin de ligne
+        line[strcspn(line, "\n")] = 0;
+
+        // Ajoute le nom de l'équipe à la liste
+        // Ajoute le nom de l'équipe à la liste
+        strcpy((*team_names)[*num_teams], line);
+        (*num_teams)++;
+    }
+
+    fclose(file);
+
+    // Mélange les noms d'équipes de manière aléatoire
+    srand(time(NULL));
+
+    //Shuffle
+    for (int i = *num_teams - 1; i > 0; i--) {
+        int j = rand() % (i + 1);
+        char temp[MAX_TEAM_NAME_LEN];
+        strcpy(temp, (*team_names)[i]);
+        strcpy((*team_names)[i], (*team_names)[j]);
+        strcpy((*team_names)[j], temp);
+    }
+}
 int num_teams;
-char **team_names;//[MAX_TEAM_NAME_LEN];
+char **team_names;
 int teams_remaining[MAX_TEAMS];
-int manuelle;
+
 
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -52,7 +96,7 @@ void *play_match(void *ma)
             duration++;
             printf("(%d')    %.20s %d - %d %-20s\n",duration, team_names[match->team1], match->score1, match->score2, team_names[match->team2]);
         }
-        sleep(0);
+        sleep(0.005);
     }
     int nTab = 5;
     while(match->score1 == match->score2){ //SI MATCH NUL, SEANCE DE TAB
@@ -98,25 +142,10 @@ int main(int argc, char *argv[])
     pthread_mutex_init(&mutex,NULL);
 
     //Creation d'une liste randomise avec les equipes
-    team_names = read_team_names("equipe.txt",&num_teams,&duration);
+    //Fin lecture des equipes
+    int match_duration;
+    read_team_names("equipe.txt", &num_teams, &match_duration, &team_names);
 
-    for (int i = 0; i < num_teams; i++) {
-        printf("%s\n",team_names[i]);
-    }
-
-    //Fin lecture des equipe
-    //=> liste avec les equipes, tel que chaque 2 equipes adjecentes joueront un match
-    /*team_names[0] = "Real Madrid";
-    team_names[1] = "FC Barcelone";
-    team_names[2] = "Manchester United";
-    team_names[3] = "Liverpool";
-    team_names[4] = "PSG";
-    team_names[5] = "FC Bayern";
-    team_names[6] = "Manchester City";
-    team_names[7] = "Arsenal";
-    */
-    //num_teams = 8;
-    /*
     if (num_teams % 2 != 0 || num_teams > MAX_TEAMS)
     {
         printf("Number of teams must be a power of 2 and less than %d\n", MAX_TEAMS);
@@ -177,6 +206,6 @@ int main(int argc, char *argv[])
 
 
     pthread_mutex_destroy(&mutex);
-    */
+
     return 1;
 }

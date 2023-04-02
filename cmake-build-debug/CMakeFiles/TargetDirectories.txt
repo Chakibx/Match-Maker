@@ -1,3 +1,3 @@
-/Users/aymen/Dev/OS/cmake-build-debug/CMakeFiles/OS.dir
-/Users/aymen/Dev/OS/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/aymen/Dev/OS/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/chakib/CLionProjects/OS/cmake-build-debug/CMakeFiles/OS.dir
+/home/chakib/CLionProjects/OS/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/chakib/CLionProjects/OS/cmake-build-debug/CMakeFiles/rebuild_cache.dir

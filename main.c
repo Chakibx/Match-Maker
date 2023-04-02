@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <time.h>
-#define MAX_TEAMS 100 // nombre max des equipes
+#define MAX_TEAMS 16 // nombre max des equipes
 #define MAX_TEAM_NAME_LEN 50 //taille de nom d'equipes
 #define DURATION 90 // default match duration is 90 minutes, equivalent to 5400sec
 
@@ -30,9 +30,15 @@ void read_team_names(char* filename, int* num_teams, int* match_duration, char *
     // Lecture des noms d'équipes sur les lignes suivantes
     while (fgets(line, sizeof(line), file)) {
         // Supprime le caractère de fin de ligne
-        line[strcspn(line, "\n")] = 0;
+        line[strcspn(line, "\r\n")] = 0;
 
-        // Ajoute le nom de l'équipe à la liste
+        // Supprime les espaces inutiles à la fin de la chaîne de caractères
+        int len = strlen(line);
+        while (len > 0 && line[len-1] == ' ') {
+            line[len-1] = '\0';
+            len--;
+        }
+
         // Ajoute le nom de l'équipe à la liste
         strcpy((*team_names)[*num_teams], line);
         (*num_teams)++;
@@ -43,7 +49,7 @@ void read_team_names(char* filename, int* num_teams, int* match_duration, char *
     // Mélange les noms d'équipes de manière aléatoire
     srand(time(NULL));
 
-    //Shuffle
+    // Shuffle
     for (int i = *num_teams - 1; i > 0; i--) {
         int j = rand() % (i + 1);
         char temp[MAX_TEAM_NAME_LEN];
@@ -52,6 +58,7 @@ void read_team_names(char* filename, int* num_teams, int* match_duration, char *
         strcpy((*team_names)[j], temp);
     }
 }
+
 int num_teams;
 char **team_names;
 int teams_remaining[MAX_TEAMS];
@@ -88,13 +95,13 @@ void *play_match(void *ma)
         { // 1% de chance de marquer pour l'equipe 1
             match->score1++;
             duration++;
-            printf("(%d')    %.20s %d - %d %-20s\n",duration, team_names[match->team1], match->score1, match->score2, team_names[match->team2]);
+            printf("(%d') %.20s %d - %d %-20s\n",duration, team_names[match->team1], match->score1, match->score2, team_names[match->team2]);
         }
         else //action == 100
         { // 1% de chance de marquer pour l'equipe 2
             match->score2++;
             duration++;
-            printf("(%d')    %.20s %d - %d %-20s\n",duration, team_names[match->team1], match->score1, match->score2, team_names[match->team2]);
+            printf("(%d') %.20s %d - %d %-20s\n",duration, team_names[match->team1], match->score1, match->score2, team_names[match->team2]);
         }
         sleep(0.005);
     }
@@ -105,12 +112,12 @@ void *play_match(void *ma)
             tab = rand() % 100;
             if(tab > 20){ //80% de chance de marquer
                 match->score1++;
-                printf("    %.20s (%d) - (%d) %-20s\n", team_names[match->team1], match->score1, match->score2, team_names[match->team2]);
+                printf("%.20s (%d) - (%d) %-20s\n", team_names[match->team1], match->score1, match->score2, team_names[match->team2]);
             }
             tab = rand() % 100;
             if(tab < 40){//60% de chance de marquer
                 match->score2++;
-                printf("    %.20s (%d) - (%d) %-20s\n", team_names[match->team1], match->score1, match->score2, team_names[match->team2]);
+                printf("%.20s (%d) - (%d) %-20s\n", team_names[match->team1], match->score1, match->score2, team_names[match->team2]);
             }
             nTab--;
         }
@@ -145,6 +152,10 @@ int main(int argc, char *argv[])
     //Fin lecture des equipes
     int match_duration;
     read_team_names("equipe.txt", &num_teams, &match_duration, &team_names);
+
+    for (int i = 0; i < num_teams; ++i) {
+        printf("%s\n",team_names[i]);
+    }
 
     if (num_teams % 2 != 0 || num_teams > MAX_TEAMS)
     {
@@ -212,13 +223,16 @@ int main(int argc, char *argv[])
 
     // écriture des informations de chaque match dans le fichier texte
     for (int i = 0; i < num_match; i++) {
-        fprintf(fp, "Match %d : Equipe %s vs Equipe %s - Score %d:%d - Tour %d\n", i + 1, team_names[matchs[i]->team1], team_names[matchs[i]->team2], matchs[i]->score1, matchs[i]->score2, matchs[i]->tour);
+        fprintf(fp, "Match %d : %s [%d] : [%d] %s | Tour %d\n", i + 1, team_names[matchs[i]->team1],matchs[i]->score1,matchs[i]->score2, team_names[matchs[i]->team2], matchs[i]->tour);
     }
 
     fclose(fp); // fermeture du fichier
 
     //free(matchs); // libération de la mémoire allouée pour le tableau de matchs
-
+    for (int i = 0; i < num_teams; i++) {
+        free(team_names[i]);
+    }
+    free(team_names);
 
     pthread_mutex_destroy(&mutex);
 

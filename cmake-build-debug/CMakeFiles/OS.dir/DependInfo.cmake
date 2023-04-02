@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/ayoub/CLionProjects/OS/main.c" "CMakeFiles/OS.dir/main.c.o" "gcc" "CMakeFiles/OS.dir/main.c.o.d"
+  "/home/chakib/CLionProjects/OS/main.c" "CMakeFiles/OS.dir/main.c.o" "gcc" "CMakeFiles/OS.dir/main.c.o.d"
   )
 
 # Targets to which this target links.

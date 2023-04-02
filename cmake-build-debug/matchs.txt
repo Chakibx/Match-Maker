@@ -1,15 +1,15 @@
-Match 1 : Equipe Liverpool	 vs Equipe Arsenal			 - Score 5:1 - Tour 1
-Match 2 : Equipe Manchester City vs Equipe Spurs - Score 0:1 - Tour 1
-Match 3 : Equipe FC Barcelona vs Equipe Juventus	 - Score 1:0 - Tour 1
-Match 4 : Equipe RB Leipzig		 vs Equipe  - Score 2:0 - Tour 1
-Match 5 : Equipe Real Madrid vs Equipe Atlético de Madrid	 - Score 2:1 - Tour 1
-Match 6 : Equipe Paris SG vs Equipe FC Bayern München - Score 3:2 - Tour 1
-Match 7 : Equipe Inter			 vs Equipe Chelsea - Score 2:0 - Tour 1
-Match 8 : Equipe Borussia Dortmund vs Equipe Manchester Utd - Score 1:2 - Tour 1
-Match 9 : Equipe Spurs vs Equipe FC Barcelona - Score 4:2 - Tour 2
-Match 10 : Equipe Liverpool	 vs Equipe Inter			 - Score 6:5 - Tour 2
-Match 11 : Equipe RB Leipzig		 vs Equipe Real Madrid - Score 5:3 - Tour 2
-Match 12 : Equipe Paris SG vs Equipe Manchester Utd - Score 0:1 - Tour 2
-Match 13 : Equipe Liverpool	 vs Equipe Spurs - Score 0:2 - Tour 3
-Match 14 : Equipe RB Leipzig		 vs Equipe Manchester Utd - Score 0:2 - Tour 3
-Match 15 : Equipe Spurs vs Equipe Manchester Utd - Score 2:1 - Tour 4
+Match 1 : Inter [12] : [11] FC Bayern München | Tour 1
+Match 2 : Liverpool [1] : [2] Borussia Dortmund | Tour 1
+Match 3 : FC Barcelona [0] : [1] Atlético de Madrid | Tour 1
+Match 4 : Juventus [1] : [2] Paris SG | Tour 1
+Match 5 : Manchester City [0] : [2] Manchester Utd | Tour 1
+Match 6 : Spurs [5] : [3] Chelsea | Tour 1
+Match 7 : Arsenal [2] : [0] Real Madrid | Tour 1
+Match 8 : Osasuna [2] : [1] RB Leipzig | Tour 1
+Match 9 : Atlético de Madrid [5] : [3] Manchester Utd | Tour 2
+Match 10 : Inter [2] : [1] Borussia Dortmund | Tour 2
+Match 11 : Paris SG [0] : [1] Spurs | Tour 2
+Match 12 : Arsenal [6] : [2] Osasuna | Tour 2
+Match 13 : Inter [5] : [3] Atlético de Madrid | Tour 3
+Match 14 : Spurs [2] : [1] Arsenal | Tour 3
+Match 15 : Inter [2] : [0] Spurs | Tour 4

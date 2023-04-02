@@ -3,7 +3,10 @@ project(OS C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_executable(OS main.c)
+add_executable(OS main.c shuffle.c)
 
+target_link_libraries(OS pthread)
 
-target_link_libraries(OS pthread m)
+target_compile_options(OS PRIVATE -g)
+
+configure_file(equipe.txt ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)

@@ -202,7 +202,22 @@ int main(int argc, char *argv[])
     }
 
     //Enregistrement des matchs dans un fichier texte
+    // écriture des matchs dans un fichier texte
+    FILE* fp;
+    fp = fopen("matchs.txt", "w"); // ouverture du fichier en mode écriture
+    if (fp == NULL) {
+        printf("Erreur d'ouverture du fichier.");
+        return 1;
+    }
 
+    // écriture des informations de chaque match dans le fichier texte
+    for (int i = 0; i < num_match; i++) {
+        fprintf(fp, "Match %d : Equipe %d vs Equipe %d - Score %d:%d - Tour %d\n", i + 1, matchs[i]->team1, matchs[i]->team2, matchs[i]->score1, matchs[i]->score2, matchs[i]->tour);
+    }
+
+    fclose(fp); // fermeture du fichier
+
+    //free(matchs); // libération de la mémoire allouée pour le tableau de matchs
 
 
     pthread_mutex_destroy(&mutex);

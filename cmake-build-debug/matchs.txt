@@ -1,0 +1,15 @@
+Match 1 : Equipe 0 vs Equipe 1 - Score 0:1 - Tour 1
+Match 2 : Equipe 2 vs Equipe 3 - Score 5:3 - Tour 1
+Match 3 : Equipe 4 vs Equipe 5 - Score 1:2 - Tour 1
+Match 4 : Equipe 6 vs Equipe 7 - Score 5:4 - Tour 1
+Match 5 : Equipe 8 vs Equipe 9 - Score 2:1 - Tour 1
+Match 6 : Equipe 10 vs Equipe 11 - Score 2:1 - Tour 1
+Match 7 : Equipe 12 vs Equipe 13 - Score 5:2 - Tour 1
+Match 8 : Equipe 14 vs Equipe 15 - Score 0:2 - Tour 1
+Match 9 : Equipe 6 vs Equipe 10 - Score 5:4 - Tour 2
+Match 10 : Equipe 8 vs Equipe 15 - Score 0:2 - Tour 2
+Match 11 : Equipe 2 vs Equipe 5 - Score 6:3 - Tour 2
+Match 12 : Equipe 1 vs Equipe 12 - Score 1:3 - Tour 2
+Match 13 : Equipe 6 vs Equipe 12 - Score 3:2 - Tour 3
+Match 14 : Equipe 2 vs Equipe 15 - Score 6:3 - Tour 3
+Match 15 : Equipe 2 vs Equipe 6 - Score 8:7 - Tour 4

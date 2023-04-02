@@ -27,29 +27,29 @@ void *play_match(void *ma)
 {
     Match match = (Match) ma;
 
-    int duration = DURATION;
+    int duration = 0;
     int action;
 
     // Simulate match by randomly generating scores
     printf("DEBUT %s %d - %d %s [TOUR %d]\n",team_names[match->team1],match->score1, match->score2,team_names[match->team2],match->tour);
-    while (duration > 0)
+    while (duration < DURATION)
     {
         action = rand() % 100; // simulate random action
         if (action < 98)
         { // 98% chance of no score
-            duration--;
+            duration++;
         }
         else if (action == 99 )
         { // 1% chance of goal for team 1
             match->score1++;
-            duration--;
-            printf("    %.20s %d - %d %-20s\n", team_names[match->team1], match->score1, match->score2, team_names[match->team2]);
+            duration++;
+            printf("(%d')    %.20s %d - %d %-20s\n",duration, team_names[match->team1], match->score1, match->score2, team_names[match->team2]);
         }
         else
         { // 1% chance of goal for team 2
             match->score2++;
-            duration--;
-            printf("    %.20s %d - %d %-20s\n", team_names[match->team1], match->score1, match->score2, team_names[match->team2]);
+            duration++;
+            printf("(%d')    %.20s %d - %d %-20s\n",duration, team_names[match->team1], match->score1, match->score2, team_names[match->team2]);
         }
         sleep(0.005);
     }
@@ -73,14 +73,14 @@ void *play_match(void *ma)
     }
     if(match->score1 > match->score2){
         pthread_mutex_lock(&mutex);
-        teams_remaining[match->team1]++;
+        teams_remaining[match->team1] = match->tour+1;
         teams_remaining[match->team2] = -1;
         pthread_mutex_unlock(&mutex);
         printf("FIN %s* %d - %d %s\n",team_names[match->team1], match->score1, match->score2, team_names[match->team2]);
     }
     else{
         pthread_mutex_lock(&mutex);
-        teams_remaining[match->team2]++;
+        teams_remaining[match->team2] = match->tour+1;
         teams_remaining[match->team1] = -1;
         pthread_mutex_unlock(&mutex);
         printf("FIN %s %d - %d %s*\n",team_names[match->team1], match->score1, match->score2, team_names[match->team2]);
@@ -146,7 +146,6 @@ int main(int argc, char *argv[])
                         matchs[num_match]->score1 = 0;
                         matchs[num_match]->score2 = 0;
                         matchs[num_match]->tour = teams_remaining[team2];
-                        printf("tour = %d\n",t);
                         teams_remaining[team1] = 0;
                         teams_remaining[team2] = 0;
                         pthread_create(&threads[num_match], NULL, play_match, matchs[num_match]);
@@ -165,6 +164,12 @@ int main(int argc, char *argv[])
     {
         pthread_join(threads[i], NULL);
     }
+
+    for (int i = 0; i < num_matchs_total; ++i) {
+        printf("%d ",teams_remaining[i]);
+    }
+
+
 
     pthread_mutex_destroy(&mutex);
 

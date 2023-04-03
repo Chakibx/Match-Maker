@@ -20,7 +20,7 @@
 extern int match_duration;
 extern int num_teams;
 extern char **team_names;
-extern int teams_remaining[MAX_TEAMS];
+extern int * teams_remaining;
 extern pthread_mutex_t mutex;
 
 typedef struct Match{
@@ -35,5 +35,6 @@ void read_team_names(char* filename, int* num_teams, char *** team_names);
 void *simulate_match(void *ma);
 void play_match(Match match);
 void save_matchs(char **team_names, Match *matchs, int num_match);
+void free_memory();
 
 #endif

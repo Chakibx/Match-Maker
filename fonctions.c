@@ -271,4 +271,12 @@ void save_matchs(char **team_names, Match *matchs, int num_match) {
 
     fclose(fp); // Fermeture du fichier
 }
+void free_memory() {
+    for (int i = 0; i < num_teams; i++) {
+        free(team_names[i]);
+    }
+    free(team_names);
+    free(teams_remaining);
+}
+
 

@@ -2,7 +2,7 @@
 int match_duration = DURATION;
 int num_teams;
 char **team_names;
-int teams_remaining[MAX_TEAMS];
+int * teams_remaining;
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 int main(int argc, char *argv[])
 {
@@ -17,6 +17,8 @@ int main(int argc, char *argv[])
     //Fin lecture des equipes
     read_team_names(filename, &num_teams, &team_names);
 
+    //Allocation du tableau teams_remaining
+    teams_remaining = (int *)malloc(num_teams*sizeof(int));
     //Initialisation du tableau a 1 qui corresspond au numero du tour
     for (int i = 0; i < num_teams; i++)
     {
@@ -101,11 +103,8 @@ int main(int argc, char *argv[])
     //Ecriture du resumé sur fichier
     save_matchs(team_names, matchs, num_match);
 
-    //free(matchs); // libération de la mémoire allouée pour le tableau de matchs
-    for (int i = 0; i < num_teams; i++) {
-        free(team_names[i]);
-    }
-    free(team_names);
+    //Liberation memoire des deux tableaux
+    free_memory();
 
     return 1;
 }

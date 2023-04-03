@@ -7,8 +7,12 @@
 #include <unistd.h>
 #include <string.h>
 #include <time.h>
+#include <stdio.h>
+#include <ctype.h>
+#include <termios.h>
+#include <sys/select.h>
 
-#define MAX_TEAMS 16 // nombre max des equipes
+#define MAX_TEAMS 64 // nombre max des equipes
 #define MAX_TEAM_NAME_LEN 50 //taille de nom d'equipes
 #define DURATION 90 // default match duration is 90 minutes, equivalent to 5400sec
 #define FILENAME "equipe.txt"
@@ -27,10 +31,9 @@ typedef struct Match{
     int tour;
 }*Match;
 
-
-
 void read_team_names(char* filename, int* num_teams, char *** team_names);
-void *play_match(void *ma);
+void *simulate_match(void *ma);
+void play_match(Match match);
+void enregistrer_matchs(char **team_names, Match *matchs, int num_match);
 
 #endif
-

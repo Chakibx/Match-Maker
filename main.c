@@ -1,5 +1,5 @@
 #include "fonctions.h"
-int match_duration;
+int match_duration = DURATION;
 int num_teams;
 char **team_names;
 int teams_remaining[MAX_TEAMS];
@@ -7,7 +7,6 @@ pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 int main(int argc, char *argv[])
 {
     char * filename;
-    pthread_mutex_init(&mutex,NULL);
     if (argc != 2) {
         filename = FILENAME;
     }else {
@@ -18,12 +17,6 @@ int main(int argc, char *argv[])
     //Fin lecture des equipes
     read_team_names(filename, &num_teams, &team_names);
 
-    if (num_teams % 2 != 0 || num_teams > MAX_TEAMS)
-    {
-        printf("Number of teams must be a power of 2 and less than %d\n", MAX_TEAMS);
-        exit(EXIT_FAILURE);
-    }
-
     //Initialisation du tableau a 1 qui corresspond au numero du tour
     for (int i = 0; i < num_teams; i++)
     {
@@ -31,70 +24,87 @@ int main(int argc, char *argv[])
     }
 
     int num_matchs_total = num_teams-1;
-
-    // Create threads to play matches
-    pthread_t threads[num_matchs_total];
     Match matchs[num_matchs_total];
-
-    int team2 = 0;
     int num_match = 0;
-    int t;
-    while(num_match < num_matchs_total){
-        for (int team1 = 0; team1 < num_teams; team1++)
-        {
-            pthread_mutex_lock(&mutex);
-            if(teams_remaining[team1] > 0){
-                t = teams_remaining[team1]; //le tour
-                team2 = team1+1;
-                while(team2 < num_teams){
-                    if(teams_remaining[team2] == t){
-                        matchs[num_match] = (Match)malloc(sizeof(struct Match));
-                        matchs[num_match]->team1 = team1;
-                        matchs[num_match]->team2 = team2;
-                        matchs[num_match]->score1 = 0;
-                        matchs[num_match]->score2 = 0;
-                        matchs[num_match]->tour = teams_remaining[team2];
-                        teams_remaining[team1] = 0;
-                        teams_remaining[team2] = 0;
-                        pthread_create(&threads[num_match], NULL, play_match, matchs[num_match]);
-                        num_match++;
+    int team1 = 0;
+    int team2 = 0;
+    int tour = 1;
+    int manual=1 ;
+    do {
+        printf("Choisir le mode de jeu : [1]:Mode simulation concurrente | [2]:Mode manuel \n");
+        scanf("%d",&manual);
+    }while(manual != 1 && manual != 2);
+
+    //******************************************************************************************
+    if (manual == 1) {
+
+        pthread_mutex_init(&mutex,NULL);
+
+        // Create threads to play matches
+        pthread_t threads[num_matchs_total];
+        while(num_match < num_matchs_total){
+            for (team1 = 0; team1 < num_teams; team1++)
+            {
+                pthread_mutex_lock(&mutex);
+                if(teams_remaining[team1] > 0){
+                    tour = teams_remaining[team1]; //le tour
+                    team2 = team1+1;
+                    while(team2 < num_teams){
+                        if(teams_remaining[team2] == tour){
+                            matchs[num_match] = (Match)malloc(sizeof(struct Match));
+                            matchs[num_match]->team1 = team1;
+                            matchs[num_match]->team2 = team2;
+                            matchs[num_match]->score1 = 0;
+                            matchs[num_match]->score2 = 0;
+                            matchs[num_match]->tour = teams_remaining[team2];
+                            teams_remaining[team1] = 0;
+                            teams_remaining[team2] = 0;
+                            pthread_create(&threads[num_match], NULL, simulate_match, matchs[num_match]);
+                            num_match++;
+                            team2++;
+                            break;
+                        }
                         team2++;
-                        break;
                     }
-                    team2++;
                 }
+                pthread_mutex_unlock(&mutex);
             }
-            pthread_mutex_unlock(&mutex);
+        }
+
+        for (int i = 0; i < num_matchs_total; i++)
+        {
+            pthread_join(threads[i], NULL);
+        }
+        pthread_mutex_destroy(&mutex);
+    }else {//***********************************************************************************
+        while(num_match<num_matchs_total) {
+            team1=0;
+            team2=0;
+            while(team1<num_teams && team2 < num_teams) {
+                while (teams_remaining[team1] <= 0) { team1++; }
+                team2 = team1 + 1;
+                while (teams_remaining[team2] <= 0) { team2++; }
+                matchs[num_match] = (Match) malloc(sizeof(struct Match));
+                matchs[num_match]->team1 = team1;
+                matchs[num_match]->team2 = team2;
+                matchs[num_match]->score1 = 0;
+                matchs[num_match]->score2 = 0;
+                matchs[num_match]->tour = tour;
+                play_match(matchs[num_match]);
+                num_match++;
+                team1= team2 + 1;
+            }
+            tour++;
         }
     }
 
-    for (int i = 0; i < num_matchs_total; i++)
-    {
-        pthread_join(threads[i], NULL);
-    }
+    enregistrer_matchs(team_names, matchs, num_match);
 
-    //Enregistrement des matchs dans un fichier texte
-    // écriture des matchs dans un fichier texte
-    FILE* fp;
-    fp = fopen("matchs.txt", "w"); // ouverture du fichier en mode écriture
-    if (fp == NULL) {
-        printf("Erreur d'ouverture du fichier.");
-        return 1;
-    }
-
-    // écriture des informations de chaque match dans le fichier texte
-    for (int i = 0; i < num_match; i++) {
-        fprintf(fp, "Match %d : %s [%d] : [%d] %s | Tour %d\n", i + 1, team_names[matchs[i]->team1],matchs[i]->score1,matchs[i]->score2, team_names[matchs[i]->team2], matchs[i]->tour);
-    }
-
-    fclose(fp); // fermeture du fichier
     //free(matchs); // libération de la mémoire allouée pour le tableau de matchs
     for (int i = 0; i < num_teams; i++) {
         free(team_names[i]);
     }
     free(team_names);
-
-    pthread_mutex_destroy(&mutex);
 
     return 1;
 }

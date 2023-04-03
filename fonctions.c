@@ -256,7 +256,7 @@ void play_match(Match match){ //fonction qui permet de
         printf("FIN %s %d - %d %s*\n",team_names[match->team1], match->score1, match->score2, team_names[match->team2]);
     }
 }
-void enregistrer_matchs(char **team_names, Match *matchs, int num_match) {
+void save_matchs(char **team_names, Match *matchs, int num_match) {
     // Ouverture du fichier en mode écriture
     FILE *fp = fopen("matchs.txt", "w");
     if (fp == NULL) {

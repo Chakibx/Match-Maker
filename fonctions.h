@@ -34,6 +34,6 @@ typedef struct Match{
 void read_team_names(char* filename, int* num_teams, char *** team_names);
 void *simulate_match(void *ma);
 void play_match(Match match);
-void enregistrer_matchs(char **team_names, Match *matchs, int num_match);
+void save_matchs(char **team_names, Match *matchs, int num_match);
 
 #endif

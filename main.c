@@ -98,7 +98,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    enregistrer_matchs(team_names, matchs, num_match);
+    save_matchs(team_names, matchs, num_match);
 
     //free(matchs); // libération de la mémoire allouée pour le tableau de matchs
     for (int i = 0; i < num_teams; i++) {

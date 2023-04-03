@@ -4,11 +4,15 @@
 #include <unistd.h>
 #include <string.h>
 #include <time.h>
+#include <ctype.h>
+
 #define MAX_TEAMS 16 // nombre max des equipes
 #define MAX_TEAM_NAME_LEN 50 //taille de nom d'equipes
 #define DURATION 90 // default match duration is 90 minutes, equivalent to 5400sec
+#define FILENAME "equipe.txt"
+int match_duration;
 
-void read_team_names(char* filename, int* num_teams, int* match_duration, char *** team_names) {
+void read_team_names(char* filename, int* num_teams, char *** team_names) {
     FILE *file;
     *team_names = (char**) malloc(MAX_TEAMS * sizeof(char*));
     char line[MAX_TEAM_NAME_LEN];
@@ -25,7 +29,15 @@ void read_team_names(char* filename, int* num_teams, int* match_duration, char *
 
     // Lecture de la durée du match sur la première ligne
     fgets(line, sizeof(line), file);
-    *match_duration = atoi(line);
+    int line_len = strlen(line);
+
+    //Verification si une duree est introduite
+    int num;
+    if (sscanf(line, "%d", &num) == 1) {
+        match_duration = atoi(line);
+    }else {
+        match_duration = DURATION;
+    }
 
     // Lecture des noms d'équipes sur les lignes suivantes
     while (fgets(line, sizeof(line), file)) {
@@ -84,7 +96,7 @@ void *play_match(void *ma)
 
     // Simulate match by randomly generating scores
     printf("DEBUT %s %d - %d %s [TOUR %d]\n",team_names[match->team1],match->score1, match->score2,team_names[match->team2],match->tour);
-    while (duration < DURATION)
+    while (duration < match_duration)
     {
         action = rand() % 100; // simulate random action
         if (action < 98)
@@ -146,16 +158,18 @@ void printMatch(Match match){
 
 int main(int argc, char *argv[])
 {
+    char * filename;
     pthread_mutex_init(&mutex,NULL);
+    if (argc != 2) {
+        filename = FILENAME;
+    }else {
+        filename = argv[1];
+    }
+
 
     //Creation d'une liste randomise avec les equipes
     //Fin lecture des equipes
-    int match_duration;
-    read_team_names("equipe.txt", &num_teams, &match_duration, &team_names);
-
-    for (int i = 0; i < num_teams; ++i) {
-        printf("%s\n",team_names[i]);
-    }
+    read_team_names(filename, &num_teams, &team_names);
 
     if (num_teams % 2 != 0 || num_teams > MAX_TEAMS)
     {

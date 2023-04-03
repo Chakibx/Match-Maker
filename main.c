@@ -4,13 +4,25 @@
 #include <unistd.h>
 #include <string.h>
 #include <time.h>
-#include <ctype.h>
 
 #define MAX_TEAMS 16 // nombre max des equipes
 #define MAX_TEAM_NAME_LEN 50 //taille de nom d'equipes
 #define DURATION 90 // default match duration is 90 minutes, equivalent to 5400sec
 #define FILENAME "equipe.txt"
+
 int match_duration;
+typedef struct Match{
+    int team1;
+    int team2;
+    int score1;
+    int score2;
+    int tour;
+}*Match;
+int num_teams;
+char **team_names;
+int teams_remaining[MAX_TEAMS];
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+
 
 void read_team_names(char* filename, int* num_teams, char *** team_names) {
     FILE *file;
@@ -31,17 +43,12 @@ void read_team_names(char* filename, int* num_teams, char *** team_names) {
     fgets(line, sizeof(line), file);
     int line_len = strlen(line);
 
-    // Vérification si une durée est introduite
+    //Verification si une duree est introduite
     int num;
     if (sscanf(line, "%d", &num) == 1) {
         match_duration = atoi(line);
-        printf("entier \n");
-        printf("%d",match_duration);
-
-    } else {
+    }else {
         match_duration = DURATION;
-        printf("pas entier \n");
-        printf("%d",match_duration);
     }
 
     // Lecture des noms d'équipes sur les lignes suivantes
@@ -56,17 +63,17 @@ void read_team_names(char* filename, int* num_teams, char *** team_names) {
             len--;
         }
 
-        // Vérifie si la ligne ne contient que des espaces
-        int is_whitespace = 1;
+        // Vérifie si la ligne contient que des vides
+        int only_spaces = 1;
         for (int i = 0; i < len; i++) {
-            if (!isspace(line[i])) {
-                is_whitespace = 0;
+            if (line[i] != ' ') {
+                only_spaces = 0;
                 break;
             }
         }
 
-        // Ajoute le nom de l'équipe à la liste si la ligne n'est pas vide
-        if (!is_whitespace) {
+        // Si la ligne ne contient pas que des vides, ajoute le nom de l'équipe à la liste
+        if (!only_spaces) {
             strcpy((*team_names)[*num_teams], line);
             (*num_teams)++;
         }
@@ -86,22 +93,6 @@ void read_team_names(char* filename, int* num_teams, char *** team_names) {
         strcpy((*team_names)[j], temp);
     }
 }
-
-
-int num_teams;
-char **team_names;
-int teams_remaining[MAX_TEAMS];
-
-
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
-
-typedef struct Match{
-    int team1;
-    int team2;
-    int score1;
-    int score2;
-    int tour;
-}*Match;
 
 
 void *play_match(void *ma)
@@ -258,7 +249,6 @@ int main(int argc, char *argv[])
     }
 
     fclose(fp); // fermeture du fichier
-
     //free(matchs); // libération de la mémoire allouée pour le tableau de matchs
     for (int i = 0; i < num_teams; i++) {
         free(team_names[i]);

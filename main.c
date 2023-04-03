@@ -98,6 +98,7 @@ int main(int argc, char *argv[])
         }
     }
 
+    //Ecriture du resumé sur fichier
     save_matchs(team_names, matchs, num_match);
 
     //free(matchs); // libération de la mémoire allouée pour le tableau de matchs

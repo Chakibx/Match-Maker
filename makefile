@@ -6,7 +6,7 @@ CC=gcc
 # Options de compilation
 CFLAGS=-Wall -Wextra -g
 
-# Liste des fichiers sourcess
+# Liste des fichiers sourcesss
 SRCS=main.c fonctions.c
 
 # Liste des fichiers objets générés

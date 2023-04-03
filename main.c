@@ -31,12 +31,17 @@ void read_team_names(char* filename, int* num_teams, char *** team_names) {
     fgets(line, sizeof(line), file);
     int line_len = strlen(line);
 
-    //Verification si une duree est introduite
+    // Vérification si une durée est introduite
     int num;
     if (sscanf(line, "%d", &num) == 1) {
         match_duration = atoi(line);
-    }else {
+        printf("entier \n");
+        printf("%d",match_duration);
+
+    } else {
         match_duration = DURATION;
+        printf("pas entier \n");
+        printf("%d",match_duration);
     }
 
     // Lecture des noms d'équipes sur les lignes suivantes
@@ -51,9 +56,20 @@ void read_team_names(char* filename, int* num_teams, char *** team_names) {
             len--;
         }
 
-        // Ajoute le nom de l'équipe à la liste
-        strcpy((*team_names)[*num_teams], line);
-        (*num_teams)++;
+        // Vérifie si la ligne ne contient que des espaces
+        int is_whitespace = 1;
+        for (int i = 0; i < len; i++) {
+            if (!isspace(line[i])) {
+                is_whitespace = 0;
+                break;
+            }
+        }
+
+        // Ajoute le nom de l'équipe à la liste si la ligne n'est pas vide
+        if (!is_whitespace) {
+            strcpy((*team_names)[*num_teams], line);
+            (*num_teams)++;
+        }
     }
 
     fclose(file);
@@ -70,6 +86,7 @@ void read_team_names(char* filename, int* num_teams, char *** team_names) {
         strcpy((*team_names)[j], temp);
     }
 }
+
 
 int num_teams;
 char **team_names;
